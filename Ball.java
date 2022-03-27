@@ -1,5 +1,3 @@
-package assign2;
-
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
@@ -14,61 +12,58 @@ public class Ball {
 	}
 
 	public void render(GraphicsContext gc){
-		gc.setFill(Color.BLUE);
+		gc.setFill(Color.YELLOW);
 		gc.fillOval(x-RADIUS, y-RADIUS, 2*RADIUS, 2*RADIUS);
 	}
 
 	// start the ball in mid-screen with a somewhat
 	// random direction
 	public void reset() {
-	    x = Game.WIDTH/2;
-	    y = Game.HEIGHT/4;
-	    if (Math.random() < 0.5)
+	    x = AnimationTest.WIDTH/2;
+	    y = AnimationTest.HEIGHT/4;
+	    if (Math.random() < 0.5) //decides if ball moves right or left on start
 	        vx = -7;
 	    else
 	        vx = 7;
-	    vy = (int)(2+3*Math.random());
+	    vy = (int)(2+3*Math.random()); //randomly assigns y velocity
 	}
 
-	public int getX() {
+	public int getX() { //x getter
 		return x;
 	}
-	public int getY() {
-		return y;
+
+	public void checkHit(Paddle p) { 
+		int px = p.getX(); //gets x from paddle
+		if (Math.abs(px - x) > RADIUS) //if absolute value of (px-x) > the radius of ball, return
+		    return;
+		int py1 = p.getTop();  //get top of paddle
+		int py2 = p.getBottom(); //get bottom of paddle
+		if ((y < py1)||(y > py2)) //if the Y isnt between top and bottom of paddle
+			return;
+		// reverse direction
+		vx = -vx; //invert X
 	}
 
-	public void checkHit(Paddle p) {
-		int py = p.getTop();
-		if( y+RADIUS < py )
-			return;
-		int px1 = p.getLeft();
-		int px2 = p.getRight();
-		if ((x < px1-10)||(x > px2-10))
-			return;
-		vy = -vy;
-	}
-	
-	//Checks if emoji is hit by ball
-	//if yes, return true
-	public boolean checkEm(Emojis e) {
-		int ex = e.getX();
-		int ey = e.getY();
-		
-		if ((x-50 < ex) && (ex < x+50) && (y-50 < ey) && (ey < y+50)){
+	public boolean checkBH(Character bh){
+		int bx = bh.getX();
+		int by = bh.getY();
+		int br = bh.getRadius()/2;
+		int TOPOFBH = by-br;
+		int BOTOFBH = by+br;
+		int REDGEBR = bx+br;
+		int LEDGEBR = bx-br;
+		if( (y > TOPOFBH) && (y < BOTOFBH) && (x > LEDGEBR-5) && (x < REDGEBR+5) ){
+			reset();
 			return true;
 		}
 		return false;
-		
 	}
-	
 
 	public void move() {
 		x += vx;
 		y += vy;
-		// Bounce off all walls
-		if (y < RADIUS || y+RADIUS > Game.HEIGHT )
-		    vy = -vy;
-		if (x < RADIUS || x+RADIUS > Game.WIDTH )
-		    vx = -vx;
+		// Bounce off top and bottom of screen
+		if (y < RADIUS || y+RADIUS > AnimationTest.HEIGHT) //if the Y is less than radius, or if the y+radius is greater than the height
+		    vy = -vy; //invert Y
 	}
 }
