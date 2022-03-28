@@ -20,7 +20,7 @@ public class Game extends Application {
 	final static int HEIGHT = 500;
 	final static int EDGE = 30;
 	static int numCaptured = 0;
-	Image space = new Image( "space2.jpg" );
+	Image space = new Image( "brick.jpg" );
 
 	Ball ball1;
 	Ball ball2;
